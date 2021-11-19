@@ -27,7 +27,7 @@ bl_info = {
     "name": "Crystals Generator",
     "description": "Plugin generates crystals.",
     "author": "Mateusz Dera",
-    "version": (1, 0),
+    "version": (1, 1),
     "blender": (2, 93, 0),
     "tracker_url": "",
     "category": "Add Mesh"
@@ -51,14 +51,16 @@ class create(bpy.types.Operator):
         middle_width = context.scene.middle_width
         top_width_in_percent = context.scene.top_width_in_percent
 
-        rot_x_min = -15
-        rot_x_max = 15
+        rot_x_min = context.scene.rot_x * -1
+        rot_x_max = context.scene.rot_x
 
-        rot_y_min = -15
-        rot_y_max = 15
+        rot_y_min = context.scene.rot_y * -1
+        rot_y_max = context.scene.rot_y
 
-        rot_z_min = 0
-        rot_z_max = 60
+        rot_z_min = context.scene.rot_z * -1
+        rot_z_max = context.scene.rot_z
+
+        rot = context.scene.rot * random.randint(1, 360)
 
         #-=-=-=-=-=-=-=-
         top_height = height * (top_height_in_percent / 100)
@@ -81,6 +83,9 @@ class create(bpy.types.Operator):
                 bpy.ops.transform.resize(value=(top_width, top_width, top_width), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
 
         bpy.ops.object.editmode_toggle()
+
+        bpy.ops.transform.rotate(value=radians(rot), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
         return {"FINISHED"}
 
 class main_panel(bpy.types.Panel):
@@ -100,10 +105,6 @@ class main_panel(bpy.types.Panel):
         col6 = layout.column(align = True)
         col7 = layout.column(align = True)
         col8 = layout.column(align = True)
-        col9 = layout.column(align = True)
-        col10 = layout.column(align = True)
-        col11 = layout.column(align = True)
-        col12 = layout.column(align = True)
 
         col1.prop(context.scene, "vertices")
         col2.prop(context.scene, "height")
@@ -112,14 +113,11 @@ class main_panel(bpy.types.Panel):
         col5.prop(context.scene, "middle_width")
         col6.prop(context.scene, "top_width_in_percent")
         
-        col7.prop(context.scene, "rot_x_min")
-        col8.prop(context.scene, "rot_x_max")
+        col7.prop(context.scene, "rot_x")
+        col7.prop(context.scene, "rot_y")
+        col7.prop(context.scene, "rot_z")
 
-        col9.prop(context.scene, "rot_x_min")
-        col10.prop(context.scene, "rot_x_max")
-
-        col11.prop(context.scene, "rot_x_min")
-        col12.prop(context.scene, "rot_x_max")
+        col8.prop(context.scene, "rot")
 
         layout.operator("crystalsgenerator.create", text="Generate crystal")
 
@@ -171,7 +169,39 @@ def register() :
         min=0,
         max=100,
       )
-    
+    bpy.types.Scene.rot_x = bpy.props.IntProperty \
+      (
+        name = "X",
+        description = "Maximum X rotation",
+        default = 15,
+        min=0,
+        max=30,
+      )
+    bpy.types.Scene.rot_y = bpy.props.IntProperty \
+      (
+        name = "Y",
+        description = "Maximum Y rotation",
+        default = 15,
+        min=0,
+        max=30,
+      )
+    bpy.types.Scene.rot_z = bpy.props.IntProperty \
+      (
+        name = "Z",
+        description = "Maximum Z rotation",
+        default = 60,
+        min=0,
+        max=60,
+      )
+    bpy.types.Scene.rot = bpy.props.IntProperty \
+      (
+        name = "Step",
+        description = "Rotation step",
+        default = 15,
+        min=1,
+        max=360,
+      )
+
 def unregister() :
     bpy.utils.unregister_class(create)
     bpy.utils.unregister_class(main_panel)
