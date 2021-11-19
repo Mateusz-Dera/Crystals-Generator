@@ -27,7 +27,7 @@ bl_info = {
     "name": "Crystals Generator",
     "description": "Plugin generates crystals.",
     "author": "Mateusz Dera",
-    "version": (1, 1),
+    "version": (1, 2),
     "blender": (2, 93, 0),
     "tracker_url": "",
     "category": "Add Mesh"
@@ -62,6 +62,8 @@ class create(bpy.types.Operator):
 
         rot = context.scene.rot * random.randint(1, 360)
 
+        bevel = context.scene.bevel
+
         #-=-=-=-=-=-=-=-
         top_height = height * (top_height_in_percent / 100)
         top_width =  middle_width * (top_width_in_percent / 100)
@@ -86,6 +88,11 @@ class create(bpy.types.Operator):
 
         bpy.ops.transform.rotate(value=radians(rot), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
 
+        if bevel:
+            bpy.ops.object.modifier_add(type='BEVEL')
+            bpy.ops.object.modifier_apply(modifier="Bevel")
+
+
         return {"FINISHED"}
 
 class main_panel(bpy.types.Panel):
@@ -105,6 +112,7 @@ class main_panel(bpy.types.Panel):
         col6 = layout.column(align = True)
         col7 = layout.column(align = True)
         col8 = layout.column(align = True)
+        col9 = layout.column(align = True)
 
         col1.prop(context.scene, "vertices")
         col2.prop(context.scene, "height")
@@ -118,6 +126,8 @@ class main_panel(bpy.types.Panel):
         col7.prop(context.scene, "rot_z")
 
         col8.prop(context.scene, "rot")
+        
+        col9.prop(context.scene, "bevel")
 
         layout.operator("crystalsgenerator.create", text="Generate crystal")
 
@@ -200,6 +210,12 @@ def register() :
         default = 15,
         min=1,
         max=360,
+      )
+    bpy.types.Scene.bevel = bpy.props.BoolProperty \
+      (
+        name = "Bevel",
+        description = "Bevel modifier",
+        default = False,
       )
 
 def unregister() :
