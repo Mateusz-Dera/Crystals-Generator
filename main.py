@@ -1,5 +1,5 @@
 # Crystals Generator
-# Copyright © 2021 Mateusz Dera
+# Copyright © 2021-2022 Mateusz Dera
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ bl_info = {
     "name": "Crystals Generator",
     "description": "Plugin generates crystals.",
     "author": "Mateusz Dera",
-    "version": (1, 2),
-    "blender": (2, 93, 0),
+    "version": (1, 3),
+    "blender": (3, 0, 0),
     "tracker_url": "",
     "category": "Add Mesh"
 }
@@ -75,7 +75,6 @@ class create(bpy.types.Operator):
         bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, (height - top_height)), "orient_type":'NORMAL', "orient_matrix":((0.433884, 0.900969, -0), (-0.900969, 0.433884, 0), (0, 0, 1)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
         bpy.ops.transform.resize(value=(middle_width, middle_width, middle_width), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
         bpy.ops.transform.rotate(value=radians(random.randint(rot_x_min, rot_x_max)), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
-        bpy.ops.transform.rotate(value=radians(random.randint(rot_y_min, rot_y_max)), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
         bpy.ops.transform.rotate(value=radians(random.randint(rot_z_min, rot_z_max)), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
         bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, top_height), "orient_type":'NORMAL', "orient_matrix":((0.433884, 0.900969, -0), (-0.900969, 0.433884, 0), (0, 0, 1)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
         if top_height_in_percent > 0:
@@ -151,8 +150,8 @@ def register() :
       )
     bpy.types.Scene.top_height_in_percent = bpy.props.IntProperty \
       (
-        name = "Top height",
-        description = "Top height %",
+        name = "Top part height",
+        description = "Percentage height of the top part",
         default = 20,
         min=0,
         max=100,
@@ -160,53 +159,53 @@ def register() :
     bpy.types.Scene.bottom_width = bpy.props.FloatProperty \
       (
         name = "Bottom",
-        description = "Height of the middle",
+        description = "Size of the bottom part",
         default = 1,
         min=1
       )
     bpy.types.Scene.middle_width = bpy.props.FloatProperty \
       (
         name = "Middle",
-        description = "Height of the middle",
+        description = "Size of the middle part",
         default = 1.25,
         min=1,
       )
     bpy.types.Scene.top_width_in_percent = bpy.props.IntProperty \
       (
-        name = "Top Width",
-        description = "Top width %",
+        name = "Top",
+        description = "Percentage size of the top part",
         default = 0,
         min=0,
         max=100,
       )
     bpy.types.Scene.rot_x = bpy.props.IntProperty \
       (
-        name = "X",
-        description = "Maximum X rotation",
+        name = "Max twist X",
+        description = "Random twist X",
         default = 15,
         min=0,
         max=30,
       )
     bpy.types.Scene.rot_y = bpy.props.IntProperty \
       (
-        name = "Y",
-        description = "Maximum Y rotation",
+        name = "Max twist Y",
+        description = "Random twist Y",
         default = 15,
         min=0,
         max=30,
       )
     bpy.types.Scene.rot_z = bpy.props.IntProperty \
       (
-        name = "Z",
-        description = "Maximum Z rotation",
+        name = "Max twist Z",
+        description = "Random twist Z",
         default = 60,
         min=0,
         max=60,
       )
     bpy.types.Scene.rot = bpy.props.IntProperty \
       (
-        name = "Step",
-        description = "Rotation step",
+        name = "Rotation",
+        description = "Crystal Z rotation",
         default = 15,
         min=1,
         max=360,
@@ -231,3 +230,4 @@ def unregister() :
 
 if __name__ == "__main__" :
     register()
+
