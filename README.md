@@ -1,4 +1,4 @@
-# Crystal-Generator
+# Crystals-Generator
 ## Info:
 - Plugin generate crystals.
 - Blender 3.0x
